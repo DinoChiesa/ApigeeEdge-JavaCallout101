@@ -1,7 +1,0 @@
-<JavaCallout name='JavaCallout-Sleeper'>
-  <Properties>
-    <Property name="sleeptime">6</Property>
-  </Properties>
-  <ClassName>com.dinochiesa.edgecallouts.Sleeper</ClassName>
-  <ResourceURL>java://edge-java-callout-101.jar</ResourceURL>
-</JavaCallout>
