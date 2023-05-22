@@ -3,10 +3,10 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.apigee.callout</groupId>
-  <artifactId>edge-java-callout-101</artifactId>
-  <version>20200131</version>
-  <name>EdgeJavaCallout101</name>
+  <groupId>com.google.apigee.callouts</groupId>
+  <artifactId>apigee-java-callout-101</artifactId>
+  <version>20230522</version>
+  <name>ApigeeJavaCallout101</name>
   <url>http://maven.apache.org</url>
   <packaging>jar</packaging>
   <properties>
@@ -18,7 +18,6 @@
 
 
   <dependencies>
-
 
 <!--
 
@@ -86,7 +85,7 @@ do it manually by running these commands:
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
+        <version>3.8.1</version>
         <configuration>
           <showDeprecation>true</showDeprecation>
           <source>${jdk.target.version}</source>
@@ -101,7 +100,7 @@ do it manually by running these commands:
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.1.1</version>
+        <version>3.2.0</version>
         <configuration>
           <archive>
             <!-- do not include the pom.xml file in the generated jar -->
@@ -113,11 +112,32 @@ do it manually by running these commands:
 
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.0.0</version>
         <executions>
           <execution>
-            <phase>package</phase>
+            <id>ant1</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
             <configuration>
-              <tasks>
+              <target>
+                <delete>
+                  <fileset dir="${apiproxy.java.rsrc.dir}">
+                    <include name="*.jar" />
+                  </fileset>
+                </delete>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>ant2</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
                 <copy todir="${apiproxy.java.rsrc.dir}">
                   <fileset dir="${project.build.directory}">
                     <include name="${project.build.finalName}.jar"/>
@@ -129,11 +149,8 @@ do it manually by running these commands:
                   </fileset>
                   <mapper type="flatten"/>
                 </copy>
-              </tasks>
+              </target>
             </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
           </execution>
         </executions>
       </plugin>
@@ -141,7 +158,7 @@ do it manually by running these commands:
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M2</version>
+        <version>3.0.0-M3</version>
         <executions>
           <execution>
             <id>enforce-maven</id>
@@ -151,7 +168,7 @@ do it manually by running these commands:
             <configuration>
               <rules>
                 <requireMavenVersion>
-                  <version>3.0.5</version>
+                  <version>3.5.0</version>
                 </requireMavenVersion>
               </rules>
             </configuration>
@@ -162,7 +179,7 @@ do it manually by running these commands:
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
-        <version>2.7</version>
+        <version>2.8.1</version>
         <executions>
           <execution>
             <phase>compile</phase>

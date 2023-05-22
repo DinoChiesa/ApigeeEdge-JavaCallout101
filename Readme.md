@@ -1,7 +1,7 @@
 # Java Callout 101
 
 This directory contains the Java source code and pom.xml file required to
-compile a simple Java callout for Apigee Edge. The callout is very simple: it
+compile a simple Java callout for Apigee. The callout is very simple: it
 reads and sets context variables, and the message payload, and returns success.
 
 ## Building:
@@ -22,20 +22,27 @@ reads and sets context variables, and the message payload, and returns success.
    ```xml
     <JavaCallout name='Java-Simple-101'>
       <Properties>
-        <Property name='sleeptime'>6</Property> <!-- in seconds -->
+        <Property name='integer-setting'>6</Property>
       </Properties>
-      <ClassName>com.dinochiesa.edgecallouts.ExampleCallout</ClassName>
-      <ResourceURL>java://edge-java-callout-101-20200131.jar</ResourceURL>
+      <ClassName>com.google.apigee.callouts.ExampleCallout</ClassName>
+      <ResourceURL>java://apigee-java-callout-101-20230522.jar</ResourceURL>
     </JavaCallout>
    ```
 
-5. use the Edge UI, or a tool like [importAndDeploy.js](https://github.com/DinoChiesa/apigee-edge-js-examples/blob/master/importAndDeploy.js) or similar to
+5. use the Google Cloud Console UI, or a tool like [importAndDeploy.js](https://github.com/DinoChiesa/apigee-edge-js-examples/blob/master/importAndDeploy.js) or similar to
    import the proxy into an Edge organization, and then deploy the proxy .
    Eg,
-   ```node ./importAndDeploy -v -u myemail@example.org -o $ORG -e $ENV  -d bundle```
+   ```
+   TOKEN=`gcloud auth print-access-token`
+   node ./importAndDeploy -v --token $TOKEN --apigeex -o $ORG -e $ENV  -d bundle
+   ```
 
 6. Use a client to generate and send http requests to the proxy. Eg,
-   ```curl -i http://ORGNAME-test.apigee.net/example-callout/example```
+   ```
+   curl -i https://my-endpoint.net/callout-101/example1
+   curl -i https://my-endpoint.net/callout-101/example2
+   curl -i https://my-endpoint.net/callout-101/example3
+   ```
 
 
 
@@ -62,19 +69,31 @@ which reads and writes context variables, and sets the header and content .
 ## Example Usage
 
 ```
-$ curl -i https://ORGNAME-test.apigee.net/example-callout/example
-HTTP/1.1 200 OK
-Date: Wed, 04 Nov 2015 01:13:46 GMT
-Content-Type: application/json
-Content-Length: 478
-Connection: keep-alive
-JavaCallout-Sleep-Start: 11/04/2015 01:13:40
-JavaCallout-Sleep-End: 11/04/2015 01:13:46
-X-time-target-elapsed: 0.0
-X-time-total-elapsed: 6138.0
-Server: Apigee Router
+$ curl -i https://my-apigee-endpoint.com/callout-101/example3
 
-{  "status" : "OK" }
+HTTP/2 200
+javacallout-stamp: 2023-05-22T22:32:33.983307Z
+content-type: text/plain
+x-time-target-elapsed: 0.0
+x-time-total-elapsed: 3.0
+x-request-id: 21a87ac8-aa2b-4870-9acd-e53991ab9407
+content-length: 283
+date: Mon, 22 May 2023 22:32:33 GMT
+via: 1.1 google
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+status: OK
+int-setting: 42
+string-setting:
+
+  Whitespace in the following XML element will be significant;
+  it appears in the property value that is retrieved at runtime.
+
+  proxy: example-callout r6
+  current conditional flow name: flow3
+
+
+--end--
 ```
 
 ## Bugs

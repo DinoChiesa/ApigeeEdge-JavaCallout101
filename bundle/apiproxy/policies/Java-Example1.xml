@@ -1,0 +1,8 @@
+<JavaCallout name='Java-Example1'>
+  <Properties>
+    <Property name="integer-setting">176</Property>
+    <Property name="string-setting">This•is•a•string</Property>
+  </Properties>
+  <ClassName>com.google.apigee.callouts.ExampleCallout</ClassName>
+  <ResourceURL>java://apigee-java-callout-101-20230522.jar</ResourceURL>
+</JavaCallout>

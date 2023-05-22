@@ -1,5 +1,4 @@
-<AssignMessage name='AssignMessage-ClearResponse'>
-  <DisplayName>AssignMessage - Clear Msg</DisplayName>
+<AssignMessage name='AM-Clear-Request-Headers-From-Response'>
   <Remove>
     <Headers/>
   </Remove>

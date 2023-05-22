@@ -1,7 +1,0 @@
-<JavaCallout name='JavaCallout-Example'>
-  <Properties>
-    <Property name="setting">176</Property>
-  </Properties>
-  <ClassName>com.dinochiesa.edgecallouts.ExampleCallout</ClassName>
-  <ResourceURL>java://edge-java-callout-101-20200131.jar</ResourceURL>
-</JavaCallout>

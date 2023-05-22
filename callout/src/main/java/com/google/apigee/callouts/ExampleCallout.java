@@ -6,7 +6,7 @@
 //
 // ------------------------------------------------------------------
 
-package com.dinochiesa.edgecallouts;
+package com.google.apigee.callouts;
 
 import com.apigee.flow.execution.ExecutionContext;
 import com.apigee.flow.execution.ExecutionResult;
@@ -22,20 +22,22 @@ import java.util.regex.Pattern;
 public class ExampleCallout implements Execution {
   private static final Pattern variableReferencePattern =
       Pattern.compile("(.*?)\\{([^\\{\\} :][^\\{\\} ]*?)\\}(.*?)");
-  private static final int SETTING_DEFAULT = 42;
+  private static final int INT_SETTING_DEFAULT = 42;
+  private static final String STRING_SETTING_DEFAULT = "Not Set";
+
   private Map properties; // read-only
 
   public ExampleCallout(Map properties) {
     this.properties = properties;
   }
 
-  private int getSetting(MessageContext msgCtxt) throws IllegalStateException {
+  private int getIntegerSetting(MessageContext msgCtxt) throws IllegalStateException {
     // This shows how to retrieve a setting from a property
     // in the JavaCallout policy configuration.
-    // In this case the setting is coerced to an integer value.
-    String value = (String) this.properties.get("setting");
-    if (value == null || value.equals("")) {
-      return SETTING_DEFAULT;
+    // In this case the setting is parsed to an integer.
+    String value = (String) this.properties.get("integer-setting");
+    if (value == null || value.trim().equals("")) {
+      return INT_SETTING_DEFAULT;
     }
     value = resolveVariableReferences(value, msgCtxt);
     if (value == null || value.equals("")) {
@@ -43,15 +45,29 @@ public class ExampleCallout implements Execution {
       // if someone provided a string and it resolves to empty, that's a bad thing.
       throw new IllegalStateException("value resolves to null or empty.");
     }
-    int actualValue = SETTING_DEFAULT;
+    int actualValue = INT_SETTING_DEFAULT;
     try {
       actualValue = Integer.parseInt(value);
     } catch (java.lang.Exception exc1) {
-      actualValue = SETTING_DEFAULT;
+      actualValue = INT_SETTING_DEFAULT;
+      // could also throw here, if that is desired.
       msgCtxt.getMessage().setHeader("JavaCallout-parse-exception", exc1.toString());
     }
 
     return actualValue;
+  }
+
+  private String getStringSetting(MessageContext msgCtxt) throws IllegalStateException {
+    // Retrieve a value from a named property, as a string.
+    String value = (String) this.properties.get("string-setting");
+    if (value == null || value.trim().equals("")) {
+      return STRING_SETTING_DEFAULT;
+    }
+    value = resolveVariableReferences(value, msgCtxt);
+    if (value == null || value.equals("")) {
+      throw new IllegalStateException("value resolves to null or empty.");
+    }
+    return value;
   }
 
   /*
@@ -89,30 +105,30 @@ public class ExampleCallout implements Execution {
     Message msg = msgCtxt.getMessage();
 
     // set a variable.
-    msgCtxt.setVariable("sleepCallout.stamp", formattedStamp);
+    msgCtxt.setVariable("exampleCallout.stamp", formattedStamp);
+    msg.setHeader("JavaCallout-Stamp", formattedStamp);
 
-    // Set a header. This will be in the request or the response, depending
-    // on where in the logic flow the Java callout policy is configured to run.
-    msg.setHeader("JavaCallout-Sleep-Stamp", formattedStamp);
-
-    // read a setting from the policy configuration file
-    int settingValue = getSetting(msgCtxt);
+    // read a few settings from the policy configuration file
+    int intSettingValue = getIntegerSetting(msgCtxt);
+    String stringSettingValue = getStringSetting(msgCtxt);
 
     Instant end = Instant.now();
     String formattedEnd = DateTimeFormatter.ISO_INSTANT.format(end);
     // set variable and headers
-    msgCtxt.setVariable("sleepCallout.setting", Integer.toString(settingValue));
-    msg.setHeader("JavaCallout-setting", Integer.toString(settingValue));
-    msg.setHeader("Content-Type", "application/json");
+    msgCtxt.setVariable("exampleCallout.int-setting", Integer.toString(intSettingValue));
+    msg.setHeader("Content-Type", "text/plain");
 
     // Get a contrived "response payload".
-    String jsonResult = "{ \"status\" : \"OK\" }";
+    String result = "status: OK\n"
+      + String.format("int-setting: %d\n", intSettingValue)
+      + String.format("string-setting:\n%s\n", stringSettingValue)
+      + "\n--end--\n";
 
     // Set the content of the current message with that payload.
     // This will be the response.content if the Java callout is
     // configured on the Response flow.  It will be the request.content
     // if the policy is configured on the Request flow.
-    msg.setContent(jsonResult);
+    msg.setContent(result);
 
     return ExecutionResult.SUCCESS;
   }
