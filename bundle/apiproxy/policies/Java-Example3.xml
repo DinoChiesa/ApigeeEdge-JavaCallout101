@@ -14,5 +14,5 @@
 </Property>
   </Properties>
   <ClassName>com.google.apigee.callouts.ExampleCallout</ClassName>
-  <ResourceURL>java://apigee-java-callout-101-20230522.jar</ResourceURL>
+  <ResourceURL>java://apigee-java-callout-101-20240815.jar</ResourceURL>
 </JavaCallout>

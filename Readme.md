@@ -14,7 +14,7 @@ reads and sets context variables, and the message payload, and returns success.
 2. Build with maven.
   ```mvn clean package```
 
-3. if you edit proxy bundles offline, copy the resulting jar file, available in  target/httpsig-edge-callout.jar to your apiproxy/resources/java directory.  If you don't edit proxy bundles offline, upload the jar file into the API Proxy via the Edge API Proxy Editor .
+3. if you edit proxy bundles offline, copy the resulting jar file, available in  target/httpsig-edge-callout.jar to your apiproxy/resources/java directory.  If you don't edit proxy bundles offline, upload the jar file into the API Proxy via the Apigee API Proxy Editor .
 
 4. include an XML file for the Java callout policy in your
    apiproxy/resources/policies directory. It should look
@@ -25,7 +25,7 @@ reads and sets context variables, and the message payload, and returns success.
         <Property name='integer-setting'>6</Property>
       </Properties>
       <ClassName>com.google.apigee.callouts.ExampleCallout</ClassName>
-      <ResourceURL>java://apigee-java-callout-101-20230522.jar</ResourceURL>
+      <ResourceURL>java://apigee-java-callout-101-20240815.jar</ResourceURL>
     </JavaCallout>
    ```
 
